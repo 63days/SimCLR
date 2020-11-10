@@ -3,6 +3,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 import torchvision.transforms as transforms
 from gaussian_blur import GaussianBlur
+from color_distortion import ColorDistortion
 from torchvision import datasets
 
 class DataSetWrapper(object):
@@ -26,9 +27,19 @@ class DataSetWrapper(object):
         # I strongly recommand you to use torchvision.transforms to implement data augmentation
         # You can use provided gaussian_blur if you want
 
-        data_transforms: transforms.Compose
-
+        random_resized_crop = transforms.RandomResizedCrop(size=(96, 96))
+        random_horizontal_flip = transforms.RandomHorizontalFlip()
+        color_distortion = ColorDistortion()
         gaussian_blur = GaussianBlur(kernel_size = int(0.1* self.input_shape[0]))
+
+        data_transforms = transforms.Compose([
+            random_resized_crop,
+            random_horizontal_flip,
+            color_distortion,
+            gaussian_blur,
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
 
         return data_transforms
 
