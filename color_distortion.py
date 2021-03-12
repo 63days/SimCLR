@@ -16,8 +16,6 @@ class ColorDistortion(object):
             self.rnd_gray])
 
     def __call__(self, sample):
-        sample = np.array(sample)
-
         sample = self.color_distort(sample)
 
         return sample
